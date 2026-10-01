@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Мои заявки{% endblock %}
+{% block content %}
+<h3>Мои заявки — {{ period.semester_code }}</h3>
+
+{% set badge = {
+    'submitted': 'secondary',
+    'allocated': 'success',
+    'rejected': 'danger',
+    'cancelled': 'dark'
+} %}
+
+<table class="table">
+    <thead><tr><th>Приоритет</th><th>Курс</th><th>Статус</th></tr></thead>
+    <tbody>
+    {% for a in apps %}
+        <tr>
+            <td>{{ a.priority }}</td>
+            <td>{{ a.course.title }}</td>
+            <td><span class="badge bg-{{ badge.get(a.status, 'secondary') }}">{{ a.status }}</span></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3" class="text-muted">Заявок пока нет.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

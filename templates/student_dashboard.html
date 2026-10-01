@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Кабинет студента{% endblock %}
+{% block content %}
+<h3 class="mb-4">Открытые периоды записи на элективы</h3>
+
+{% if not periods %}
+<p class="text-muted">Сейчас нет открытых периодов записи.</p>
+{% endif %}
+
+<div class="row g-3">
+    {% for period in periods %}
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ period.semester_code }}</h5>
+                <p class="card-text small text-muted">
+                    До {{ period.end_date.strftime('%d.%m.%Y %H:%M') }}<br>
+                    Макс. приоритетов: {{ period.max_priorities }}
+                </p>
+                <a href="{{ url_for('student.apply', period_id=period.period_id) }}" class="btn btn-primary btn-sm">
+                    Подать заявку
+                </a>
+                <a href="{{ url_for('student.my_applications', period_id=period.period_id) }}" class="btn btn-outline-secondary btn-sm">
+                    Мои заявки
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

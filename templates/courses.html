@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Курсы{% endblock %}
+{% block content %}
+<h3>Курсы — {{ period.semester_code }}</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Новый курс</h5>
+        <form method="post" class="row g-2">
+            <div class="col-md-4">
+                <label class="form-label small">Название</label>
+                <input type="text" name="title" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Преподаватель</label>
+                <input type="text" name="teacher_name" class="form-control">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Мест</label>
+                <input type="number" name="total_seats" class="form-control" min="1" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Факультет</label>
+                <select name="faculty_id" class="form-select">
+                    <option value="">—</option>
+                    {% for f in faculties %}
+                    <option value="{{ f.faculty_id }}">{{ f.faculty_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="form-label small">Описание</label>
+                <textarea name="description" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Добавить курс</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead><tr><th>Название</th><th>Преподаватель</th><th>Мест</th><th>Занято</th><th>Статус</th><th></th></tr></thead>
+    <tbody>
+    {% for c in courses %}
+        <tr>
+            <td>{{ c.title }}</td>
+            <td>{{ c.teacher_name or '—' }}</td>
+            <td>{{ c.total_seats }}</td>
+            <td>{{ c.occupied_seats }}</td>
+            <td><span class="badge bg-{{ 'success' if c.status == 'active' else 'secondary' }}">{{ c.status }}</span></td>
+            <td>
+                <form method="post" action="{{ url_for('deputy.archive_course', course_id=c.course_id) }}">
+                    <button class="btn btn-sm btn-outline-secondary">
+                        {{ 'Архивировать' if c.status == 'active' else 'Активировать' }}
+                    </button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

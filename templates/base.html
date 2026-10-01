@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}АРМ Замдекана{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('auth.index') }}">АРМ Замдекана</a>
+        {% if current_user.is_authenticated %}
+        <div class="d-flex align-items-center gap-3">
+            <span class="text-light small">{{ current_user.full_name }} ({{ current_user.role_name }})</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-light btn-sm">Выйти</a>
+        </div>
+        {% endif %}
+    </div>
+</nav>
+<div class="container pb-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'danger' else category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

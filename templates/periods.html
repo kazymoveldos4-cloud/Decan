@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Периоды{% endblock %}
+{% block content %}
+<h3>Периоды записи</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Новый период</h5>
+        <form method="post" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label small">Код семестра</label>
+                <input type="text" name="semester_code" class="form-control" placeholder="2026-осень" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Начало</label>
+                <input type="datetime-local" name="start_date" class="form-control" required>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small">Окончание</label>
+                <input type="datetime-local" name="end_date" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small">Макс. приоритетов</label>
+                <input type="number" name="max_priorities" class="form-control" value="5" min="1">
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">+</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead><tr><th>Семестр</th><th>Статус</th><th>Даты</th><th>Изменить статус</th></tr></thead>
+    <tbody>
+    {% for p in periods %}
+        <tr>
+            <td>{{ p.semester_code }}</td>
+            <td><span class="badge bg-info text-dark">{{ p.status }}</span></td>
+            <td>{{ p.start_date.strftime('%d.%m.%Y %H:%M') }} — {{ p.end_date.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+                <form method="post" action="{{ url_for('deputy.change_period_status', period_id=p.period_id) }}" class="d-flex gap-2">
+                    <select name="status" class="form-select form-select-sm">
+                        {% for s in ['planned', 'open', 'closed', 'allocated'] %}
+                        <option value="{{ s }}" {% if p.status == s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-outline-primary">OK</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Кабинет замдекана{% endblock %}
+{% block content %}
+<h3 class="mb-4">Периоды записи на элективы</h3>
+<a href="{{ url_for('deputy.periods') }}" class="btn btn-outline-primary mb-3">Управление периодами</a>
+
+<table class="table">
+    <thead><tr><th>Семестр</th><th>Статус</th><th>Даты</th><th>Действия</th></tr></thead>
+    <tbody>
+    {% for p in periods %}
+        <tr>
+            <td>{{ p.semester_code }}</td>
+            <td><span class="badge bg-info text-dark">{{ p.status }}</span></td>
+            <td>{{ p.start_date.strftime('%d.%m.%Y') }} — {{ p.end_date.strftime('%d.%m.%Y') }}</td>
+            <td class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('deputy.courses', period_id=p.period_id) }}" class="btn btn-sm btn-outline-secondary">Курсы</a>
+                <a href="{{ url_for('deputy.applications', period_id=p.period_id) }}" class="btn btn-sm btn-outline-secondary">Заявки</a>
+                <a href="{{ url_for('deputy.results', period_id=p.period_id) }}" class="btn btn-sm btn-outline-secondary">Результаты</a>
+                <form method="post" action="{{ url_for('deputy.allocate', period_id=p.period_id) }}"
+                      onsubmit="return confirm('Запустить распределение для {{ p.semester_code }}?');">
+                    <button type="submit" class="btn btn-sm btn-success">Распределить</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

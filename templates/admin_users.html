@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Администрирование{% endblock %}
+{% block content %}
+<h3>Пользователи</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5>Новый пользователь</h5>
+        <form method="post" action="{{ url_for('admin.create_user') }}" class="row g-2">
+            <div class="col-md-3"><input name="full_name" class="form-control" placeholder="ФИО" required></div>
+            <div class="col-md-3"><input type="email" name="email" class="form-control" placeholder="Email" required></div>
+            <div class="col-md-2"><input type="password" name="password" class="form-control" placeholder="Пароль" required></div>
+            <div class="col-md-2">
+                <select name="role_id" class="form-select">
+                    {% for r in roles %}<option value="{{ r.role_id }}">{{ r.role_name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="faculty_id" class="form-select">
+                    <option value="">Факультет —</option>
+                    {% for f in faculties %}<option value="{{ f.faculty_id }}">{{ f.faculty_name }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3"><input name="student_group" class="form-control" placeholder="Группа (для студ.)"></div>
+            <div class="col-md-2"><button class="btn btn-primary w-100">Создать</button></div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-sm mb-5">
+    <thead><tr><th>ФИО</th><th>Email</th><th>Роль</th><th>Группа</th><th>Активен</th><th></th></tr></thead>
+    <tbody>
+    {% for u in users %}
+        <tr>
+            <td>{{ u.full_name }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ u.role_name }}</td>
+            <td>{{ u.student_group or '—' }}</td>
+            <td>{{ 'Да' if u.is_active else 'Нет' }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.toggle_user', user_id=u.user_id) }}">
+                    <button class="btn btn-sm btn-outline-secondary">Вкл/выкл</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h3>Факультеты</h3>
+<form method="post" action="{{ url_for('admin.create_faculty') }}" class="row g-2 mb-3">
+    <div class="col-md-4"><input name="faculty_name" class="form-control" placeholder="Название" required></div>
+    <div class="col-md-3"><input name="faculty_code" class="form-control" placeholder="Код" required></div>
+    <div class="col-md-2"><button class="btn btn-primary w-100">Добавить</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Результаты{% endblock %}
+{% block content %}
+<h3>Результаты распределения — {{ period.semester_code }}</h3>
+
+{% if not latest_run %}
+<p class="text-muted">Распределение ещё не запускалось.</p>
+{% else %}
+<p class="text-muted">Последний запуск: #{{ latest_run.run_id }}, статус {{ latest_run.status }},
+    {{ latest_run.finished_at.strftime('%d.%m.%Y %H:%M') if latest_run.finished_at else '—' }}</p>
+
+<table class="table table-sm">
+    <thead><tr><th>Студент</th><th>Курс</th><th>Зачислен</th><th>GPA</th><th>Override</th><th>Действие</th></tr></thead>
+    <tbody>
+    {% for r in results %}
+        <tr>
+            <td>{{ r.student.full_name }}</td>
+            <td>{{ r.course.title }}</td>
+            <td>
+                {% if r.is_allocated %}<span class="badge bg-success">Да</span>
+                {% else %}<span class="badge bg-danger">Нет</span>{% endif %}
+            </td>
+            <td>{{ r.rating_used or '—' }}</td>
+            <td>{{ 'Да' if r.manual_override else '' }}</td>
+            <td>
+                <form method="post" action="{{ url_for('deputy.override', application_id=r.application_id) }}" class="d-flex gap-1">
+                    <select name="course_id" class="form-select form-select-sm" style="width:140px">
+                        {% for c in courses %}
+                        <option value="{{ c.course_id }}" {% if c.course_id == r.course_id %}selected{% endif %}>{{ c.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="text" name="reason" class="form-control form-control-sm" placeholder="причина">
+                    <button name="action" value="allocate" class="btn btn-sm btn-outline-success">Зачислить</button>
+                    <button name="action" value="reject" class="btn btn-sm btn-outline-danger">Отчислить</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

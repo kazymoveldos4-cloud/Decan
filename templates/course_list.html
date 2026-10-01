@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Курсы {{ period.semester_code }}{% endblock %}
+{% block content %}
+<h3>Элективы — {{ period.semester_code }}</h3>
+<a href="{{ url_for('student.apply', period_id=period.period_id) }}" class="btn btn-primary mb-3">Подать / изменить заявку</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Курс</th><th>Преподаватель</th><th>Мест</th><th>Свободно</th></tr>
+    </thead>
+    <tbody>
+    {% for c in courses %}
+        <tr>
+            <td>{{ c.title }}</td>
+            <td>{{ c.teacher_name or '—' }}</td>
+            <td>{{ c.total_seats }}</td>
+            <td>{{ c.free_seats }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

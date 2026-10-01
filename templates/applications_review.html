@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Заявки{% endblock %}
+{% block content %}
+<h3>Заявки — {{ period.semester_code }}</h3>
+
+{% set badge = {
+    'submitted': 'secondary',
+    'allocated': 'success',
+    'rejected': 'danger',
+    'cancelled': 'dark'
+} %}
+
+<table class="table table-sm">
+    <thead><tr><th>Студент</th><th>Группа</th><th>Курс</th><th>Приоритет</th><th>Статус</th></tr></thead>
+    <tbody>
+    {% for a in apps %}
+        <tr>
+            <td>{{ a.student.full_name }}</td>
+            <td>{{ a.student.student_group or '—' }}</td>
+            <td>{{ a.course.title }}</td>
+            <td>{{ a.priority }}</td>
+            <td><span class="badge bg-{{ badge.get(a.status, 'secondary') }}">{{ a.status }}</span></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="5" class="text-muted">Заявок пока нет.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

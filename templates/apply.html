@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Подача заявки{% endblock %}
+{% block content %}
+<h3>Подача заявки — {{ period.semester_code }}</h3>
+<p class="text-muted">
+    Укажи приоритет (1 — самый желаемый, ..., до {{ period.max_priorities }}) для курсов, на которые хочешь попасть.
+    Курсы без приоритета останутся без заявки. Повторная отправка формы заменяет предыдущую заявку.
+</p>
+
+<form method="post">
+    <table class="table align-middle">
+        <thead>
+            <tr><th>Курс</th><th>Преподаватель</th><th>Свободно / всего</th><th style="width:140px">Приоритет</th></tr>
+        </thead>
+        <tbody>
+        {% for c in courses %}
+            <tr>
+                <td>{{ c.title }}</td>
+                <td>{{ c.teacher_name or '—' }}</td>
+                <td>{{ c.free_seats }} / {{ c.total_seats }}</td>
+                <td>
+                    <input type="number" min="1" max="{{ period.max_priorities }}"
+                           name="priority_{{ c.course_id }}" class="form-control form-control-sm"
+                           value="{{ my_apps[c.course_id].priority if c.course_id in my_apps else '' }}">
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+</form>
+{% endblock %}
